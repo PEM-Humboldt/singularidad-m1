@@ -8,10 +8,10 @@ La PSC en los ecosistemas de aguas dulce interiores presenta rezagos teóricos y
 En este repositorio se compilan las rutinas para la priorización de ecosistemas de aguas interiores con base en metas nacionales y globales. En este caso se reescalo para toda Colombia, las metodologías utilizadas en el repositorio de la Orinoquía.
 
 ---
-# Dependencias 🇨🇴
+# Dependencias
 * [R](https://cran.r-project.org/mirrors.html)
 
-# Prerequisitos 🇨🇴
+# Prerequisitos
 El paquete [prioritizr](https://prioritizr.net/) permite ejecutar las funciones más importantes para la priorización de zonas de conservación. En su repositorio se puede encontrar una descripción detallada de cada una de sus funciones.
 
 ```R
@@ -52,41 +52,38 @@ package_versions <- list(
 )
 ```
 ---
-# Descripción flujo de análisis 🇨🇴
+# Descripción flujo de análisis
 
 La PSC para las aguas interiores de Colombia siguió una metodología de cuatro etapas (diagrama abajo): (i) Conceptualización: se definieron unidades de planificación, metas y objetivos de conservación, incluyendo la selección de portafolios (por ejemplo, escenarios con y sin restricciones); (ii) Preprocesamiento de datos: configuración del conjunto de datos de entrada (e.g. características hidrológicas y distribuciones de especies)  para garantizar consistencia espacial y temática; (iii) Algoritmo de optimización: el modelo PrioritizR fue configurado con restricciones espaciales, métricas de conectividad y capas de costo, y ejecutado paralelamente e iterativamente para generar áreas prioritarias; y (iv) Postprocesamiento: los resultados fueron evaluados con base en la representatividad de las aguas interiores e interpretados frente a otros productos espaciales (por ejemplo, mapas de cobertura del suelo).
 
-![Image]()
+![Image](https://github.com/PEM-Humboldt/singularidad-m1/blob/e9a86dcb8e9cd69c9b48d4626f29fa61daa6d456/Imagenes/Workflow_Aguas_Interiores_Colombia.png)
 
 
-## Ejecución del algoritmo 🇨🇴
+## Ejecución del algoritmo
 Específicamente la etapa cuatro del flujo de análisis comprende las funciones principales para el desarrollo del algoritmo de priorización, en esta fase se generan 60 portafolios que resultan de la combinación de metas de conservación (10-100%) y factores de penalidad (0-100) Por la complejidad de las combinaciónes entre estas variables de análisis, se utilizó una estructura paralelizada (paquetes `furr`, `future` y `future.apply`) que ayudan a reducir significativamente los tiempos de ejecución. Este repositorio contiene sola una version para la ejecución del algoritmo: 
 
 * Costos por conectividad: PrioritizR_Run_SingularidadM1_acuatica.R
 
 
-## Archivos necesarios 🇨🇴
-Para ambos ruinas se necesitan al menos siete archivos principales que son nombrados en el código de la siguiente manera:
+## Archivos necesarios
+Para esta rutina se necesita al menos 4 archivos principales que son nombrados en el código de la siguiente manera:
 ```R
-# INSUMOS -----------------------------------------------------------------
+# 3. INSUMOS BASE Y RUTAS DE DATOS --------------------------------------------
 
-# Área de estudio
-ae <- st_read('Area_estudio/Microcuencas.shp')
-# Especies
-spp.list <- list.files('Caracteristicas/Especies/biomodelos', full.names = T)
-# Ecosistemas
-eco.list <- list.files('Caracteristicas/Ecosistemas/Estandarizados', full.names = T)
-# Cultura
-cul.list <- list.files('Caracteristicas/Cultura/Estandarizados', full.names = T)
-# Inclusiones
-locked.in1 <- raster("Restricciones/Inclusion/RUNAP_1000_stdr.tif")
-# Costos
-# Costos por integridad
-costo.int <- st_read('Costos/Integridad_total_cor.shp')
-# costos por conectividad
-conectividad <- st_read("Conectividad/microcuencas_con_CI.shp")
+# 3.1. RUTAS DE INSUMOS ESPACIALES
+# 3.1.1. Capa de microcuencas (unidades de planificación)
+ruta_microcuencas <- 'Costos/costos_conectividad.shp'
+
+# 3.1.2. Características de biodiversidad - Especies (Biomodelos)
+ruta_especies <- 'Caracteristicas/Especies'
+
+# 3.1.3. Características de biodiversidad - Ecosistemas
+ruta_ecosistemas <- 'Caracteristicas/Ecosistemas'
+
+# 3.1.4. Raster de penalidad por integridad ecológica
+ruta_penalidad_integridad <- 'Penalidades/Integridad/penalidad_integridad_COL.tif'
 ```
-## Problema de optimización 🇨🇴
+## Problema de optimización
 
 Posteriormente se desarrolla un problema de optimización mediante la función `problem` en donde se incluyen todos componentes típicos de un problema de priorización (restricciones, penalidades, características de conservación y costos) como se detalla a cuantinuación. Las dos rutinas se plantearon de forma complementaria, en donde se consideran criterios de *Integridad* y *Conectividad*, pero en componentes diferentes del problema de priorización. Es decir, en los costos por integridad se usan penalidades de conectividad, y en costos por conectividad, se usan penalidades de integridad.
 
@@ -125,8 +122,6 @@ Este proyecto está licenciado bajo la licencia MIT. Para obtener más informaci
 
 
 # Referencias
-
-
 
 Funciones de referencia: https://prioritizr.net/reference/index.html
 
