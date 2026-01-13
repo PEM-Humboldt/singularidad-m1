@@ -99,10 +99,6 @@ rast_templ <- rast(resolution = 1000, crs = "EPSG:9377", ext = extent(ae))
 penalidad.r <- rast('Penalidades/Integridad/penalidad_integridad_COL.tif')
 penalidad.r <- 100 - penalidad.r
 
-# 3.7. Plantilla de microcuencas con información de área
-# Área total de referencia
-
-
 # 3.8. PREPROCESAMIENTO DE CARACTERÍSTICAS Y DATOS DE ENTRADA ------------------
 
 # 3.8.1. Matriz de representación (rij matrix) para optimización
@@ -452,4 +448,5 @@ cat(blue(paste0("Escenarios ejecutados: ", length(scenarios), "\n")))
 cat(blue(paste0("Soluciones generadas: ", length(scenarios) * length(penalties) * length(targets), "\n")))
 cat(blue(paste0("Resultados en: ", output.base.dir, "\n")))
 cat(blue(paste0("=============================================\n")))
+
 
