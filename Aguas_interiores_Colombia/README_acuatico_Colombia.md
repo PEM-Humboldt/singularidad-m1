@@ -56,17 +56,13 @@ package_versions <- list(
 
 La PSC para las aguas interiores de Colombia siguió una metodología de cuatro etapas (diagrama abajo): (i) Conceptualización: se definieron unidades de planificación, metas y objetivos de conservación, incluyendo la selección de portafolios (por ejemplo, escenarios con y sin restricciones); (ii) Preprocesamiento de datos: configuración del conjunto de datos de entrada (e.g. características hidrológicas y distribuciones de especies)  para garantizar consistencia espacial y temática; (iii) Algoritmo de optimización: el modelo PrioritizR fue configurado con restricciones espaciales, métricas de conectividad y capas de costo, y ejecutado paralelamente e iterativamente para generar áreas prioritarias; y (iv) Postprocesamiento: los resultados fueron evaluados con base en la representatividad de las aguas interiores e interpretados frente a otros productos espaciales (por ejemplo, mapas de cobertura del suelo).
 
-![Image](https://github.com/PEM-Humboldt/singularidad-m1/blob/c7c27070daa186bf5bf9753432b2d035842e6ced/Imagenes/Workflow_aguas_interiorires_Colombia.png)
+![Image]()
 
 
 ## Ejecución del algoritmo 🇨🇴
 Específicamente la etapa cuatro del flujo de análisis comprende las funciones principales para el desarrollo del algoritmo de priorización, en esta fase se generan 60 portafolios que resultan de la combinación de metas de conservación (10-100%) y factores de penalidad (0-100) Por la complejidad de las combinaciónes entre estas variables de análisis, se utilizó una estructura paralelizada (paquetes `furr`, `future` y `future.apply`) que ayudan a reducir significativamente los tiempos de ejecución. Este repositorio contiene sola una version para la ejecución del algoritmo: 
 
 * Costos por conectividad: PrioritizR_Run_SingularidadM1_acuatica.R
-
-Esta rutina se componen de 8 secciones las cuales pueden visualizarse fácilmente en RStudio:
-
-![Image](https://github.com/PEM-Humboldt/singularidad-m1/blob/606853d16ac565fe5e103958898490a50dd38bac/Imagenes/Workflow_Aguas_Interiores_Colombia.png)
 
 
 ## Archivos necesarios 🇨🇴
