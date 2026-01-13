@@ -9,6 +9,8 @@
 # - Targets (10-100%) y penalidades (0-100)
 # - Procesamiento paralelo con future y furrr
 # - Sistema de registro robusto con manejo de errores
+# - El procesamiento paralelo de la version para Colombia presenta algunas mejoras
+# - con respecto a la version de la Orinoquía
 
 
 # AUTOR: [Prioridades de conservación]
@@ -450,3 +452,4 @@ cat(blue(paste0("Escenarios ejecutados: ", length(scenarios), "\n")))
 cat(blue(paste0("Soluciones generadas: ", length(scenarios) * length(penalties) * length(targets), "\n")))
 cat(blue(paste0("Resultados en: ", output.base.dir, "\n")))
 cat(blue(paste0("=============================================\n")))
+
