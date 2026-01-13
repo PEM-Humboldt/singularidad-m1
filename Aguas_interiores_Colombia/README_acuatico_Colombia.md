@@ -56,7 +56,7 @@ package_versions <- list(
 
 La PSC para las aguas interiores de Colombia siguió una metodología de cuatro etapas (diagrama abajo): (i) Conceptualización: se definieron unidades de planificación, metas y objetivos de conservación, incluyendo la selección de portafolios (por ejemplo, escenarios con y sin restricciones); (ii) Preprocesamiento de datos: configuración del conjunto de datos de entrada (e.g. características hidrológicas y distribuciones de especies)  para garantizar consistencia espacial y temática; (iii) Algoritmo de optimización: el modelo PrioritizR fue configurado con restricciones espaciales, métricas de conectividad y capas de costo, y ejecutado paralelamente e iterativamente para generar áreas prioritarias; y (iv) Postprocesamiento: los resultados fueron evaluados con base en la representatividad de las aguas interiores e interpretados frente a otros productos espaciales (por ejemplo, mapas de cobertura del suelo).
 
-![Image](https://github.com/PEM-Humboldt/singularidad-m1/blob/ed38b44ca378916eb0a1618e8e9f3cceb77d93be/Imagenes/Workflow_Colombia.png)
+![Image](https://github.com/PEM-Humboldt/singularidad-m1/blob/c7c27070daa186bf5bf9753432b2d035842e6ced/Imagenes/Workflow_aguas_interiorires_Colombia.png)
 
 
 ## Ejecución del algoritmo
@@ -96,16 +96,11 @@ Posteriormente se desarrolla un problema de optimización mediante la función `
 
 | Componente | Descripción | Comando |
 | :--- | :--- | :--- |
-| **Características** | 378 mapas de distribución de especies, ecosistemas y valores culturales relacionados con sistemas de aguas interiores.| `problem(features = capa_características)` |
-| **Costos** | Dos aproximaciones de costos por *Integridad* y *Conectividad*. Define las unidades de planificación, asociando cada unidad con un valor de costo. | `problem(x = capa_costos, cost_column = 'Nombre_columna')` |
-| **Restricciones** | Dos escenarios: con y sin restricciones por *inclusión*. Fuerza al algoritmo a incluir áreas específicas de interés (áreas protegidas del RUNAP). | `add_locked_in_constraints(capa_inclusiones)` |
-| **Penalidades** | Castigan o premian áreas específicas basándose en criterios ecológicos de *conectividad* e *integridad*. Los valores se modifican según un factor de penalidad (p) numérico. | `add_connectivity_penalties(penalty = p, data = matriz_conectividad)`<br>`add_linear_penalties(penalty = p, data = 'columna_penalidad')` |
+| **Características** | 1077 mapas de distribución de especies y ecosistemas relacionados con sistemas de aguas interiores.| `problem(features = capa_características)` |
+| **Costos** | Una aproximaciones de costos por *Conectividad*. Define las unidades de planificación, asociando cada unidad con un valor de costo. | `problem(x = capa_costos, cost_column = 'Nombre_columna')` |
+| **Penalidades** | Castigan o premian áreas específicas basándose en criterios ecológicos de *Huella Humana*. Los valores se modifican según un factor de penalidad (p) numérico. | `add_linear_penalties(penalty = p, data = 'columna_penalidad')` |
 | **Metas** | Definen el porcentaje de representatividad (t) de las características a alcanzar en las áreas priorizadas. Valores escalados 0-1 (1 = 100% de representatividad). | `add_relative_targets(t)` |
 | **Objetivos** | Eje principal del problema de optimización: establece la relación entre representación de características y costos (maximizar representación, minimizar costos ecológicos). | `add_min_set_objective()` |
-
-
-## Resultados principales
-
 
 
 ---
@@ -131,7 +126,6 @@ Posteriormente se desarrolla un problema de optimización mediante la función `
 
 Este proyecto está licenciado bajo la licencia MIT. Para obtener más información, consulte el archivo [LICENCIA](https://github.com/PEM-Humboldt/singularidad-m1-2023/blob/5775e9725df540cf04fb170b167f19b88f00bedf/LICENSE). 
 
-## Financiamiento
 
 
 # Referencias
