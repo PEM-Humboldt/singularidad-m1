@@ -1,4 +1,4 @@
-#💧  Áreas prioritarias para la conservación de ecosistemas de aguas interiores de Colombia 🇨🇴
+# 💧🟡🔵🔴 Áreas prioritarias para la conservación de ecosistemas de aguas interiores de Colombia
 
 La PSC en los ecosistemas de aguas dulce interiores presenta rezagos teóricos y metodológicos en comparación a los ámbitos terrestres y marinos, debido a la complejidad de la conectividad fluvial, la falta de datos de distribución de especies y su alta variabilidad espacial y temporal. Algunos desafíos metodológicos que complican los procesos de priorización en estos ecosistemas son: 
 *	Definición de las unidades de planeación acuáticas.
