@@ -56,7 +56,7 @@ package_versions <- list(
 
 La PSC para las aguas interiores de Colombia siguió una metodología de cuatro etapas (diagrama abajo): (i) Conceptualización: se definieron unidades de planificación, metas y objetivos de conservación, incluyendo la selección de portafolios (por ejemplo, escenarios con y sin restricciones); (ii) Preprocesamiento de datos: configuración del conjunto de datos de entrada (e.g. características hidrológicas y distribuciones de especies)  para garantizar consistencia espacial y temática; (iii) Algoritmo de optimización: el modelo PrioritizR fue configurado con restricciones espaciales, métricas de conectividad y capas de costo, y ejecutado paralelamente e iterativamente para generar áreas prioritarias; y (iv) Postprocesamiento: los resultados fueron evaluados con base en la representatividad de las aguas interiores e interpretados frente a otros productos espaciales (por ejemplo, mapas de cobertura del suelo).
 
-![Image](https://github.com/PEM-Humboldt/singularidad-m1-2023/blob/7b0e7e0818c7e1d95726fe03a20468a2cfde96e8/Worlflux.jpg)
+![Image](https://github.com/PEM-Humboldt/singularidad-m1/blob/ed38b44ca378916eb0a1618e8e9f3cceb77d93be/Imagenes/Workflow_Colombia.png)
 
 
 ## Ejecución del algoritmo
