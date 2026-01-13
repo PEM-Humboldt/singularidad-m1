@@ -1,4 +1,4 @@
-# 🇨🇴💧  Áreas prioritarias para la conservación de ecosistemas de aguas interiores de Colombia
+#💧  Áreas prioritarias para la conservación de ecosistemas de aguas interiores de Colombia 🇨🇴
 
 La PSC en los ecosistemas de aguas dulce interiores presenta rezagos teóricos y metodológicos en comparación a los ámbitos terrestres y marinos, debido a la complejidad de la conectividad fluvial, la falta de datos de distribución de especies y su alta variabilidad espacial y temporal. Algunos desafíos metodológicos que complican los procesos de priorización en estos ecosistemas son: 
 *	Definición de las unidades de planeación acuáticas.
@@ -8,10 +8,10 @@ La PSC en los ecosistemas de aguas dulce interiores presenta rezagos teóricos y
 En este repositorio se compilan las rutinas para la priorización de ecosistemas de aguas interiores con base en metas nacionales y globales. En este caso se reescalo para toda Colombia, las metodologías utilizadas en el repositorio de la Orinoquía.
 
 ---
-# Dependencias
+# Dependencias 🇨🇴
 * [R](https://cran.r-project.org/mirrors.html)
 
-# Prerequisitos
+# Prerequisitos 🇨🇴
 El paquete [prioritizr](https://prioritizr.net/) permite ejecutar las funciones más importantes para la priorización de zonas de conservación. En su repositorio se puede encontrar una descripción detallada de cada una de sus funciones.
 
 ```R
@@ -52,14 +52,14 @@ package_versions <- list(
 )
 ```
 ---
-# Descripción flujo de análisis
+# Descripción flujo de análisis 🇨🇴
 
 La PSC para las aguas interiores de Colombia siguió una metodología de cuatro etapas (diagrama abajo): (i) Conceptualización: se definieron unidades de planificación, metas y objetivos de conservación, incluyendo la selección de portafolios (por ejemplo, escenarios con y sin restricciones); (ii) Preprocesamiento de datos: configuración del conjunto de datos de entrada (e.g. características hidrológicas y distribuciones de especies)  para garantizar consistencia espacial y temática; (iii) Algoritmo de optimización: el modelo PrioritizR fue configurado con restricciones espaciales, métricas de conectividad y capas de costo, y ejecutado paralelamente e iterativamente para generar áreas prioritarias; y (iv) Postprocesamiento: los resultados fueron evaluados con base en la representatividad de las aguas interiores e interpretados frente a otros productos espaciales (por ejemplo, mapas de cobertura del suelo).
 
 ![Image](https://github.com/PEM-Humboldt/singularidad-m1/blob/c7c27070daa186bf5bf9753432b2d035842e6ced/Imagenes/Workflow_aguas_interiorires_Colombia.png)
 
 
-## Ejecución del algoritmo
+## Ejecución del algoritmo 🇨🇴
 Específicamente la etapa cuatro del flujo de análisis comprende las funciones principales para el desarrollo del algoritmo de priorización, en esta fase se generan 60 portafolios que resultan de la combinación de metas de conservación (10-100%) y factores de penalidad (0-100) Por la complejidad de las combinaciónes entre estas variables de análisis, se utilizó una estructura paralelizada (paquetes `furr`, `future` y `future.apply`) que ayudan a reducir significativamente los tiempos de ejecución. Este repositorio contiene sola una version para la ejecución del algoritmo: 
 
 * Costos por conectividad: PrioritizR_Run_SingularidadM1_acuatica.R
@@ -69,7 +69,7 @@ Esta rutina se componen de 8 secciones las cuales pueden visualizarse fácilment
 ![Image](https://github.com/PEM-Humboldt/singularidad-m1-2023/blob/aabf8efe33f2557afb01f132271292dd56363477/Imagenes/Secciones_rutina_aguas_interiores.png)
 
 
-## Archivos necesarios
+## Archivos necesarios 🇨🇴
 Para ambos ruinas se necesitan al menos siete archivos principales que son nombrados en el código de la siguiente manera:
 ```R
 # INSUMOS -----------------------------------------------------------------
@@ -90,7 +90,7 @@ costo.int <- st_read('Costos/Integridad_total_cor.shp')
 # costos por conectividad
 conectividad <- st_read("Conectividad/microcuencas_con_CI.shp")
 ```
-## Problema de optimización
+## Problema de optimización 🇨🇴
 
 Posteriormente se desarrolla un problema de optimización mediante la función `problem` en donde se incluyen todos componentes típicos de un problema de priorización (restricciones, penalidades, características de conservación y costos) como se detalla a cuantinuación. Las dos rutinas se plantearon de forma complementaria, en donde se consideran criterios de *Integridad* y *Conectividad*, pero en componentes diferentes del problema de priorización. Es decir, en los costos por integridad se usan penalidades de conectividad, y en costos por conectividad, se usan penalidades de integridad.
 
