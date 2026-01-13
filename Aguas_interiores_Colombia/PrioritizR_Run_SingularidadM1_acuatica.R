@@ -9,8 +9,6 @@
 # - Targets (10-100%) y penalidades (0-100)
 # - Procesamiento paralelo con future y furrr
 # - Sistema de registro robusto con manejo de errores
-# - El procesamiento paralelo de la version para Colombia presenta algunas mejoras
-# - con respecto a la version de la Orinoquía
 
 
 # AUTOR: [Prioridades de conservación]
@@ -63,18 +61,33 @@ setwd('D:/PrioritizR_Run_Colombia')
 # Directorio base para resultados de conectividad (USUARIO)
 output.base.dir <- "Resultados_conectividad"
 
-# 3. CARGA Y PREPARACIÓN DE DATOS ----------------------------------------------
+# 3. INSUMOS BASE Y RUTAS DE DATOS --------------------------------------------
 
-# 3.1. Área de estudio - Microcuencas
-ae <- st_read('Costos/costos_conectividad.shp')
+# 3.1. RUTAS DE INSUMOS ESPACIALES
+# 3.1.1. Capa de microcuencas (unidades de planificación)
+ruta_microcuencas <- 'Costos/costos_conectividad.shp'
 
-# 3.2. Características de biodiversidad
-# 3.2.1. Especies (archivos de Biomodelos)
-spp.list <- list.files('Caracteristicas/Especies', full.names = TRUE)
+# 3.1.2. Características de biodiversidad - Especies (Biomodelos)
+ruta_especies <- 'Caracteristicas/Especies'
+
+# 3.1.3. Características de biodiversidad - Ecosistemas
+ruta_ecosistemas <- 'Caracteristicas/Ecosistemas'
+
+# 3.1.4. Raster de penalidad por integridad ecológica
+ruta_penalidad_integridad <- 'Penalidades/Integridad/penalidad_integridad_COL.tif'
+
+# 4. CARGA Y PREPARACIÓN DE DATOS ----------------------------------------------
+
+# 4.1. Área de estudio - Microcuencas
+ae <- st_read(ruta_microcuencas)
+
+# 4.2. Características de biodiversidad
+# 4.2.1. Especies (archivos de Biomodelos)
+spp.list <- list.files(ruta_especies, full.names = TRUE)
 spp.list <- rast(spp.list)
 
-# 3.2.2. Ecosistemas
-eco.list <- list.files('Caracteristicas/Ecosistemas', full.names = TRUE)
+# 4.2.2. Ecosistemas
+eco.list <- list.files(ruta_ecosistemas, full.names = TRUE)
 eco.list <- rast(eco.list)
 features.list <- c(spp.list, eco.list)
 new_names <- gsub(" ", "", names(features.list))
@@ -85,8 +98,8 @@ names(features.list) <- new_names
 raster_stack_v1 <- features.list
 crs(raster_stack_v1) <- "EPSG:9377"  # Establecer CRS apropiado
 
-# 3.4.2. Costos principales basados en conectividad
-conectividad <- st_read('Costos/costos_conectividad.shp')
+# 4.3. Costos principales basados en conectividad
+conectividad <- st_read(ruta_microcuencas)
 conectividad <- st_transform(conectividad, crs = 9377)  # Asegurar CRS consistente
 conectividad$costos.conectividad <- 1 - conectividad$nrm__MW 
 # plot(conectividad['costos.conectividad'])  
@@ -94,34 +107,33 @@ conectividad$costos.conectividad <- 1 - conectividad$nrm__MW
 # Crear raster template para visualización
 rast_templ <- rast(resolution = 1000, crs = "EPSG:9377", ext = extent(ae))
 
-# 3.6. Preparar datos para penalizaciones lineales
+# 4.4. Preparar datos para penalizaciones lineales
 # Incorporar información de integridad para usar en penalizaciones
-penalidad.r <- rast('Penalidades/Integridad/penalidad_integridad_COL.tif')
+penalidad.r <- rast(ruta_penalidad_integridad)
 penalidad.r <- 100 - penalidad.r
 
-# 3.8. PREPROCESAMIENTO DE CARACTERÍSTICAS Y DATOS DE ENTRADA ------------------
+# 4.5. PREPROCESAMIENTO DE CARACTERÍSTICAS Y DATOS DE ENTRADA ------------------
 
-# 3.8.1. Matriz de representación (rij matrix) para optimización
+# 4.5.1. Matriz de representación (rij matrix) para optimización
 # Crear matriz que relaciona unidades de planificación con características de biodiversidad
 # Cada celda representa la proporción de cobertura de una característica en una microcuenca
 pre_proc_data <- rij_matrix(conectividad, raster_stack_v1)
 # Transponer y convertir a dataframe para mejor manipulación
 pre_proc_data <- as.data.frame(t(as.matrix(pre_proc_data)))
 
-# 3.8.2. Correcciones de formato y nombres
+# 4.5.2. Correcciones de formato y nombres
 # Corregir nombre de especie con guion problemático para compatibilidad con prioritizr
 names(pre_proc_data)[
   names(pre_proc_data) == 'Leporinus_y-ophorus_10_MAXENT'] <- 
   'Leporinus_yophorus_10_MAXENT'
 
-# 3.8.3. Integración de datos en un único objeto espacial
+# 4.5.3. Integración de datos en un único objeto espacial
 # Combinar geometrías de microcuencas con datos de características y costos
 conectividad.preproc <- cbind(conectividad, pre_proc_data)
-# Redondear valores de conectividad a 1 decimal para mejorar eficiencia en procesamiento
+# Redondear valores de conectividad a 1 decimal para estabilidad numérica
 conectividad.preproc$costos.conectividad <- round(conectividad.preproc$costos.conectividad, 1)
 
-# 3.8.4. Extracción de valores de penalidad por integridad ecológica
-# Los valores de penalidad tambien se ingresan como Dataframe para mejorar evidencia
+# 4.5.4. Extracción de valores de penalidad por integridad ecológica
 # Calcular valor promedio de penalidad para cada microcuenca mediante extracción zonal
 penalidad.data <- exactextractr::exact_extract(
   x = penalidad.r,                         # Raster de penalidad
@@ -129,25 +141,26 @@ penalidad.data <- exactextractr::exact_extract(
   fun = 'mean'                            # Función estadística a aplicar
 )
 
-# 3.8.5. Normalización y preparación de datos de penalidad
+# 4.5.5. Normalización y preparación de datos de penalidad
 # Agregar valores de penalidad al objeto principal
 conectividad.preproc$Penalidad <- penalidad.data
 # Normalizar valores de penalidad: convertir de porcentaje (0-100) a proporción (0-1)
 conectividad.preproc$Penalidad <- round(conectividad.preproc$Penalidad/100, 2)
 
-# 3.8.6. Limpieza de datos
+# 4.5.6. Limpieza de datos
 # Eliminar microcuencas sin datos de penalidad (valores NA)
 conectividad.preproc <- conectividad.preproc[!is.na(conectividad.preproc$Penalidad), ]
 
-# 3.8.7. Creación de plantilla base para análisis
+# 4.5.7. Creación de plantilla base para análisis
 # Extraer solo geometrías y área de las microcuencas procesadas
 plantilla.micro <- conectividad.preproc[,"HYBAS_I"]
 # Calcular área de cada microcuenca en kilómetros cuadrados
 plantilla.micro$area_km2 <- as.numeric(st_area(plantilla.micro) / 10^6)
 
-# 3.8.8. Cálculo del área total de referencia
+# 4.5.8. Cálculo del área total de referencia
 # Sumar áreas de todas las microcuencas para cálculos de representatividad
 total_area_km2 <- sum(plantilla.micro$area_km2)
+
 
 
 # PRUEBA DE CONCEPTOS (TESTER) -------------------------------------------------
@@ -176,13 +189,13 @@ if (F) { # (USUARIO)
   plot(s1['solution_1'], main = "Solución de prueba - Costos por Conectividad")
 }
 
-# 4. PARÁMETROS DE EJECUCIÓN ---------------------------------------------------
-# Definir parámetros para los escenarios (USUARIO)
+# 5. PARÁMETROS DE EJECUCIÓN ---------------------------------------------------
+# Definir parámetros para el escenario (USUARIO)
 targets <- seq(0.1, 1, 0.1)  # Targets del 10% al 100% 
 penalties <- seq(0, 100, 20)   # Rango de penalizaciones (0-100)
 scenarios <- c("solucion1") # Solo un escenario para esta corrida
 
-# 5. PREPARACIÓN DE CARPETAS DE RESULTADOS -------------------------------------
+# 6. PREPARACIÓN DE CARPETAS DE RESULTADOS -------------------------------------
 
 # Crear directorio principal si no existe
 if (!dir.exists(output.base.dir)) {
@@ -199,8 +212,8 @@ for (folder in scenarios) {
   }
 }
 
-# 6. DEFINICIÓN DE FUNCIONES PRINCIPALES ---------------------------------------
-# 6.1. Función de registro robusto
+# 7. DEFINICIÓN DE FUNCIONES PRINCIPALES ---------------------------------------
+# 7.1. Función de registro robusto
 write_log <- function(log_path, escenario, start_time, end_time, summary_table, 
                       penalties, targets, error = NULL) {
   # Crear directorio para logs si no existe
@@ -249,7 +262,7 @@ write_log <- function(log_path, escenario, start_time, end_time, summary_table,
   sink()
 }
 
-# 6.2. Función de optimización por escenario
+# 7.2. Función de optimización por escenario
 run_scenario <- function(escenario, p, t) {
   # Determinar configuración según escenario
   raster_stack <- raster_stack_v1  # Solo especies y ecosistemas
@@ -290,7 +303,7 @@ run_scenario <- function(escenario, p, t) {
   )
 }
 
-# 7. EJECUCIÓN PRINCIPAL POR ESCENARIOS ----------------------------------------
+# 8. EJECUCIÓN PRINCIPAL POR ESCENARIO ----------------------------------------
 
 # Iterar sobre cada escenario definido
 for (escenario in scenarios) {
@@ -419,7 +432,20 @@ for (escenario in scenarios) {
   if (exists("write_log")) {
     write_log(log_file, escenario, escenario_start_time, escenario_end_time, 
               summary_table, penalties, targets, error_catch)
-  } 
+  } else {
+    # Log simple si write_log no existe
+    log_content <- paste(
+      paste("Escenario:", escenario),
+      paste("Inicio:", escenario_start_time),
+      paste("Fin:", escenario_end_time),
+      paste("Duración:", round(difftime(escenario_end_time, escenario_start_time, units = "mins"), 2), "minutos"),
+      paste("Éxitos:", length(successful_results)),
+      paste("Fallos:", length(failed_results)),
+      paste("Error:", if(!is.null(error_catch)) error_catch$message else "Ninguno"),
+      sep = "\n"
+    )
+    writeLines(log_content, log_file)
+  }
   
   # Reportar estado de finalización
   if (is.null(error_catch)) {
@@ -435,7 +461,7 @@ for (escenario in scenarios) {
   gc()
 }
 
-# 8. FINALIZACIÓN --------------------------------------------------------------
+# 9. FINALIZACIÓN --------------------------------------------------------------
 
 # Registrar tiempo final y mostrar resumen
 global_end_time <- Sys.time()
@@ -448,5 +474,3 @@ cat(blue(paste0("Escenarios ejecutados: ", length(scenarios), "\n")))
 cat(blue(paste0("Soluciones generadas: ", length(scenarios) * length(penalties) * length(targets), "\n")))
 cat(blue(paste0("Resultados en: ", output.base.dir, "\n")))
 cat(blue(paste0("=============================================\n")))
-
-
