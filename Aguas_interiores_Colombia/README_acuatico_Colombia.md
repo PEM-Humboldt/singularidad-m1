@@ -66,7 +66,7 @@ Específicamente la etapa cuatro del flujo de análisis comprende las funciones 
 
 Esta rutina se componen de 8 secciones las cuales pueden visualizarse fácilmente en RStudio:
 
-![Image](https://github.com/PEM-Humboldt/singularidad-m1-2023/blob/aabf8efe33f2557afb01f132271292dd56363477/Imagenes/Secciones_rutina_aguas_interiores.png)
+![Image](https://github.com/PEM-Humboldt/singularidad-m1/blob/606853d16ac565fe5e103958898490a50dd38bac/Imagenes/Workflow_Aguas_Interiores_Colombia.png)
 
 
 ## Archivos necesarios 🇨🇴
