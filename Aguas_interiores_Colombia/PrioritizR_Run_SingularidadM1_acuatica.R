@@ -74,7 +74,7 @@ ruta_especies <- 'Caracteristicas/Especies'
 ruta_ecosistemas <- 'Caracteristicas/Ecosistemas'
 
 # 3.1.4. Raster de penalidad por integridad ecológica
-ruta_penalidad_integridad <- 'Penalidades/Integridad/penalidad_integridad_COL.tif'
+ruta_penalidad_huella <- 'Penalidades/Huella_Humana/penalidad_huella_humana_COL.tif'
 
 # 4. CARGA Y PREPARACIÓN DE DATOS ----------------------------------------------
 
@@ -109,7 +109,7 @@ rast_templ <- rast(resolution = 1000, crs = "EPSG:9377", ext = extent(ae))
 
 # 4.4. Preparar datos para penalizaciones lineales
 # Incorporar información de integridad para usar en penalizaciones
-penalidad.r <- rast(ruta_penalidad_integridad)
+penalidad.r <- rast(ruta_penalidad_huella)
 penalidad.r <- 100 - penalidad.r
 
 # 4.5. PREPROCESAMIENTO DE CARACTERÍSTICAS Y DATOS DE ENTRADA ------------------
@@ -474,3 +474,4 @@ cat(blue(paste0("Escenarios ejecutados: ", length(scenarios), "\n")))
 cat(blue(paste0("Soluciones generadas: ", length(scenarios) * length(penalties) * length(targets), "\n")))
 cat(blue(paste0("Resultados en: ", output.base.dir, "\n")))
 cat(blue(paste0("=============================================\n")))
+
