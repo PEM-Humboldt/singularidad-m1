@@ -81,7 +81,7 @@ ruta_especies <- 'Caracteristicas/Especies'
 ruta_ecosistemas <- 'Caracteristicas/Ecosistemas'
 
 # 3.1.4. Raster de penalidad por integridad ecológica
-ruta_penalidad_integridad <- 'Penalidades/Integridad/penalidad_integridad_COL.tif'
+ruta_penalidad_huella <- 'Penalidades/Huella_Humana/penalidad_huella_humana_COL.tif'
 ```
 ## Problema de optimización
 
